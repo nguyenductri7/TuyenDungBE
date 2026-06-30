@@ -1,0 +1,1314 @@
+{
+    "info": {
+        "_postman_id": "kltn-nguoi-dung-api",
+        "name": "KLTN - API NguoiDung",
+        "description": "Collection test API cho bảng nguoi_dungs\n\n**Base URL:** http://localhost:8000/api/v1\n\n**Hướng dẫn:**\n1. Chạy request \"[Auth] Đăng nhập\" trước\n2. Token sẽ tự động được lưu vào biến `access_token`\n3. Các request khác sẽ tự dùng token này\n\n**Tài khoản test:**\n- Admin: admin@kltn.com / Admin@123\n- NTD: tuyen.dung1@kltn.com / NTD@123456\n- Ứng viên: ung.vien1@kltn.com / UV@123456\n- Bị khoá: ung.vien.khoa@kltn.com / UV@123456",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:8000/api/v1",
+            "type": "string"
+        },
+        {
+            "key": "access_token",
+            "value": "",
+            "type": "string"
+        }
+    ],
+    "item": [
+        {
+            "name": "🔓 Public - Không cần token",
+            "item": [
+                {
+                    "name": "[Auth] Đăng ký - Ứng viên",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"ho_ten\": \"Nguyễn Văn Test\",\n    \"email\": \"test.ungvien@kltn.com\",\n    \"mat_khau\": \"password123\",\n    \"mat_khau_confirmation\": \"password123\",\n    \"so_dien_thoai\": \"0987654321\",\n    \"ngay_sinh\": \"2000-06-15\",\n    \"gioi_tinh\": \"nam\",\n    \"dia_chi\": \"123 Đường ABC, Hà Nội\",\n    \"vai_tro\": 0\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/dang-ky",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "dang-ky"
+                            ]
+                        },
+                        "description": "Đăng ký tài khoản ứng viên mới\n\n**vai_tro:** 0 = Ứng viên, 1 = Nhà tuyển dụng\n(Không thể tự đăng ký vai trò Admin)"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[Auth] Đăng ký - Nhà tuyển dụng",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"ho_ten\": \"Trần Thị Test NTD\",\n    \"email\": \"test.ntd@kltn.com\",\n    \"mat_khau\": \"password123\",\n    \"mat_khau_confirmation\": \"password123\",\n    \"so_dien_thoai\": \"0911222333\",\n    \"ngay_sinh\": \"1990-03-20\",\n    \"gioi_tinh\": \"nu\",\n    \"dia_chi\": \"45 Lê Lợi, TP. HCM\",\n    \"vai_tro\": 1\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/dang-ky",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "dang-ky"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[Auth] Đăng ký - Validate Error (thiếu email)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"ho_ten\": \"Test User\",\n    \"mat_khau\": \"123456\",\n    \"mat_khau_confirmation\": \"123456\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/dang-ky",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "dang-ky"
+                            ]
+                        },
+                        "description": "Test case lỗi validation — thiếu email → 422"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[Auth] Đăng nhập - Admin ✅",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 200) {",
+                                    "    const json = pm.response.json();",
+                                    "    if (json.data && json.data.access_token) {",
+                                    "        pm.collectionVariables.set('access_token', json.data.access_token);",
+                                    "        console.log('✅ Token đã được lưu:', json.data.access_token);",
+                                    "        console.log('Vai trò:', json.data.vai_tro);",
+                                    "    }",
+                                    "}",
+                                    "",
+                                    "pm.test('Đăng nhập thành công - Status 200', function() {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test('Response có access_token', function() {",
+                                    "    const json = pm.response.json();",
+                                    "    pm.expect(json.data.access_token).to.be.a('string');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"admin@kltn.com\",\n    \"mat_khau\": \"Admin@123\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/dang-nhap",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "dang-nhap"
+                            ]
+                        },
+                        "description": "Đăng nhập với tài khoản Admin.\n\n⚡ **Script tự động:** Token được lưu vào biến `access_token` sau khi đăng nhập thành công."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[Auth] Đăng nhập - Nhà tuyển dụng",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 200) {",
+                                    "    const json = pm.response.json();",
+                                    "    if (json.data && json.data.access_token) {",
+                                    "        pm.collectionVariables.set('access_token', json.data.access_token);",
+                                    "        console.log('✅ Token NTD đã lưu. Vai trò:', json.data.vai_tro);",
+                                    "    }",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"tuyen.dung1@kltn.com\",\n    \"mat_khau\": \"NTD@123456\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/dang-nhap",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "dang-nhap"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[Auth] Đăng nhập - Ứng viên",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 200) {",
+                                    "    const json = pm.response.json();",
+                                    "    if (json.data && json.data.access_token) {",
+                                    "        pm.collectionVariables.set('access_token', json.data.access_token);",
+                                    "        console.log('✅ Token UV đã lưu. Vai trò:', json.data.vai_tro);",
+                                    "    }",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"ung.vien1@kltn.com\",\n    \"mat_khau\": \"UV@123456\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/dang-nhap",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "dang-nhap"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[Auth] Đăng nhập - Tài khoản bị khoá ❌",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"ung.vien.khoa@kltn.com\",\n    \"mat_khau\": \"UV@123456\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/dang-nhap",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "dang-nhap"
+                            ]
+                        },
+                        "description": "Test case: tài khoản bị khoá → kỳ vọng trả về 403"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[Auth] Đăng nhập - Sai mật khẩu ❌",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"admin@kltn.com\",\n    \"mat_khau\": \"SaiMatKhau999\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/dang-nhap",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "dang-nhap"
+                            ]
+                        },
+                        "description": "Test case: sai mật khẩu → kỳ vọng trả về 401"
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "🔐 Protected - Cần Bearer Token (tất cả vai trò)",
+            "item": [
+                {
+                    "name": "[HoSo] Xem hồ sơ cá nhân",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status 200', function() {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test('Có thông tin người dùng', function() {",
+                                    "    const json = pm.response.json();",
+                                    "    pm.expect(json.success).to.be.true;",
+                                    "    pm.expect(json.data).to.have.property('email');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/ho-so",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "ho-so"
+                            ]
+                        },
+                        "description": "Xem thông tin hồ sơ của người dùng đang đăng nhập."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[HoSo] Cập nhật hồ sơ",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"ho_ten\": \"Tên Đã Cập Nhật\",\n    \"so_dien_thoai\": \"0909090909\",\n    \"ngay_sinh\": \"1995-08-20\",\n    \"gioi_tinh\": \"nu\",\n    \"dia_chi\": \"99 Nguyễn Trãi, Quận 5, TP. HCM\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/ho-so",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "ho-so"
+                            ]
+                        },
+                        "description": "Cập nhật hồ sơ cá nhân.\nDùng `sometimes` rule nên chỉ gửi những trường muốn thay đổi."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[HoSo] Upload ảnh đại diện",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "anh_dai_dien",
+                                    "type": "file",
+                                    "src": "",
+                                    "description": "Chọn file ảnh (jpeg/png/jpg/webp, max 2MB)"
+                                },
+                                {
+                                    "key": "ho_ten",
+                                    "value": "Nguyễn Văn Upload",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/ho-so",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "ho-so"
+                            ]
+                        },
+                        "description": "Upload ảnh đại diện dùng multipart/form-data.\n⚠️ Chọn file ảnh từ máy tính trong field `anh_dai_dien`."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[Auth] Đổi mật khẩu ✅",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"mat_khau_cu\": \"Admin@123\",\n    \"mat_khau_moi\": \"Admin@NewPass456\",\n    \"mat_khau_moi_confirmation\": \"Admin@NewPass456\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/doi-mat-khau",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "doi-mat-khau"
+                            ]
+                        },
+                        "description": "Đổi mật khẩu.\n⚠️ Sau khi đổi thành công, tất cả token bị thu hồi → cần đăng nhập lại.\n\nTest xong nên chạy lại seeder để reset mật khẩu về mặc định."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[Auth] Đổi mật khẩu - Sai mật khẩu cũ ❌",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"mat_khau_cu\": \"MatKhauSai999\",\n    \"mat_khau_moi\": \"MatKhauMoi123\",\n    \"mat_khau_moi_confirmation\": \"MatKhauMoi123\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/doi-mat-khau",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "doi-mat-khau"
+                            ]
+                        },
+                        "description": "Test case: sai mật khẩu cũ → kỳ vọng 422"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[Auth] Đăng xuất",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 200) {",
+                                    "    pm.collectionVariables.set('access_token', '');",
+                                    "    console.log('✅ Đã đăng xuất, token đã xóa');",
+                                    "}",
+                                    "pm.test('Đăng xuất thành công - Status 200', function() {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/dang-xuat",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "dang-xuat"
+                            ]
+                        },
+                        "description": "Đăng xuất và thu hồi token hiện tại.\n⚡ **Script tự động:** Xóa token khỏi biến collection sau khi đăng xuất."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[Auth] Truy cập không có token ❌",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/ho-so",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "ho-so"
+                            ]
+                        },
+                        "description": "Test case: không có Bearer Token → kỳ vọng 401 Unauthenticated"
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "👑 Admin - Quản lý NguoiDungs (CRUD)",
+            "item": [
+                {
+                    "name": "[Admin] Danh sách tất cả người dùng",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status 200', function() {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test('Có dữ liệu phân trang', function() {",
+                                    "    const json = pm.response.json();",
+                                    "    pm.expect(json.data).to.have.property('data');",
+                                    "    pm.expect(json.data).to.have.property('total');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/admin/nguoi-dungs?per_page=10&sort_by=created_at&sort_dir=desc",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "nguoi-dungs"
+                            ],
+                            "query": [
+                                {
+                                    "key": "per_page",
+                                    "value": "10"
+                                },
+                                {
+                                    "key": "sort_by",
+                                    "value": "created_at"
+                                },
+                                {
+                                    "key": "sort_dir",
+                                    "value": "desc"
+                                }
+                            ]
+                        },
+                        "description": "Danh sách tất cả người dùng có phân trang."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[Admin] Lọc theo vai trò - Ứng viên",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/admin/nguoi-dungs?vai_tro=0",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "nguoi-dungs"
+                            ],
+                            "query": [
+                                {
+                                    "key": "vai_tro",
+                                    "value": "0",
+                                    "description": "0=UV, 1=NTD, 2=Admin"
+                                }
+                            ]
+                        },
+                        "description": "Lọc danh sách chỉ ứng viên (vai_tro=0)"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[Admin] Lọc theo vai trò - Nhà tuyển dụng",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/admin/nguoi-dungs?vai_tro=1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "nguoi-dungs"
+                            ],
+                            "query": [
+                                {
+                                    "key": "vai_tro",
+                                    "value": "1"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[Admin] Lọc tài khoản bị khoá",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/admin/nguoi-dungs?trang_thai=0",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "nguoi-dungs"
+                            ],
+                            "query": [
+                                {
+                                    "key": "trang_thai",
+                                    "value": "0",
+                                    "description": "0=bị khoá, 1=active"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[Admin] Tìm kiếm theo tên/email",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/admin/nguoi-dungs?search=admin",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "nguoi-dungs"
+                            ],
+                            "query": [
+                                {
+                                    "key": "search",
+                                    "value": "admin"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[Admin] Thống kê người dùng",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status 200', function() {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test('Có đủ các trường thống kê', function() {",
+                                    "    const json = pm.response.json();",
+                                    "    pm.expect(json.data).to.have.keys(['tong','admin','nha_tuyen_dung','ung_vien','dang_hoat_dong','bi_khoa']);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/admin/nguoi-dungs/thong-ke",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "nguoi-dungs",
+                                "thong-ke"
+                            ]
+                        },
+                        "description": "Thống kê tổng số người dùng theo từng vai trò và trạng thái."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[Admin] Tạo tài khoản mới - Admin",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"ho_ten\": \"Admin Mới Tạo\",\n    \"email\": \"admin.moi@kltn.com\",\n    \"mat_khau\": \"Admin@999\",\n    \"so_dien_thoai\": \"0900000001\",\n    \"ngay_sinh\": \"1985-01-01\",\n    \"gioi_tinh\": \"nam\",\n    \"dia_chi\": \"Hà Nội\",\n    \"vai_tro\": 2,\n    \"trang_thai\": 1\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/admin/nguoi-dungs",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "nguoi-dungs"
+                            ]
+                        },
+                        "description": "Admin tạo tài khoản mới với bất kỳ vai trò nào (0, 1, 2)"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[Admin] Tạo tài khoản mới - NTD",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"ho_ten\": \"Công Ty ABC\",\n    \"email\": \"congty.abc@kltn.com\",\n    \"mat_khau\": \"NTD@999\",\n    \"so_dien_thoai\": \"0900000002\",\n    \"vai_tro\": 1,\n    \"trang_thai\": 1\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/admin/nguoi-dungs",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "nguoi-dungs"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[Admin] Chi tiết người dùng - ID 1 (Admin)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status 200', function() {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test('Trả về đúng người dùng', function() {",
+                                    "    const json = pm.response.json();",
+                                    "    pm.expect(json.data.id).to.equal(1);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/admin/nguoi-dungs/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "nguoi-dungs",
+                                "1"
+                            ]
+                        },
+                        "description": "Xem chi tiết người dùng theo ID."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[Admin] Chi tiết - ID không tồn tại ❌",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/admin/nguoi-dungs/9999",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "nguoi-dungs",
+                                "9999"
+                            ]
+                        },
+                        "description": "Test case: ID không tồn tại → kỳ vọng 404"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[Admin] Cập nhật người dùng - ID 4",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"ho_ten\": \"Phạm Văn An (Đã sửa)\",\n    \"so_dien_thoai\": \"0911111111\",\n    \"dia_chi\": \"Địa chỉ mới - TP. HCM\",\n    \"trang_thai\": 1\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/admin/nguoi-dungs/4",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "nguoi-dungs",
+                                "4"
+                            ]
+                        },
+                        "description": "Admin cập nhật thông tin người dùng.\nDùng `sometimes` → chỉ update những trường gửi lên."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[Admin] Đổi vai trò - ID 5 thành NTD",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"vai_tro\": 1\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/admin/nguoi-dungs/5",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "nguoi-dungs",
+                                "5"
+                            ]
+                        },
+                        "description": "Thay đổi vai trò ứng viên thành nhà tuyển dụng"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[Admin] Đặt lại mật khẩu - ID 4",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"mat_khau\": \"MatKhauMoi@123\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/admin/nguoi-dungs/4",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "nguoi-dungs",
+                                "4"
+                            ]
+                        },
+                        "description": "Admin đặt lại mật khẩu của một người dùng"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[Admin] Khoá/Mở khoá tài khoản - ID 4",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Status 200', function() {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test('Trạng thái đã thay đổi', function() {",
+                                    "    const json = pm.response.json();",
+                                    "    pm.expect(json.success).to.be.true;",
+                                    "    console.log('Trạng thái mới:', json.data.trang_thai === 1 ? '✅ Active' : '🔒 Bị khoá');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/admin/nguoi-dungs/4/khoa",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "nguoi-dungs",
+                                "4",
+                                "khoa"
+                            ]
+                        },
+                        "description": "Toggle khoá/mở khoá tài khoản.\nGọi lại lần 2 để mở khoá."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[Admin] Xoá tài khoản - ID 10",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/admin/nguoi-dungs/10",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "nguoi-dungs",
+                                "10"
+                            ]
+                        },
+                        "description": "Xoá tài khoản người dùng ngẫu nhiên (ID 10).\n⚠️ Không thể xoá chính mình."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[Admin] Xoá - Không thể xoá chính mình ❌",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/admin/nguoi-dungs/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "nguoi-dungs",
+                                "1"
+                            ]
+                        },
+                        "description": "Test case: Admin xoá chính mình → kỳ vọng 422"
+                    },
+                    "response": []
+                },
+                {
+                    "name": "[Admin] Truy cập bằng token NTD/UV ❌",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/admin/nguoi-dungs",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "nguoi-dungs"
+                            ]
+                        },
+                        "description": "Test case: đăng nhập bằng NTD hoặc UV rồi gọi Admin API → kỳ vọng 403"
+                    },
+                    "response": []
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,798 @@
+{
+    "info": {
+        "_postman_id": "b2d3e4f5-6a7b-8c9d-0e1f-2a3b4c5d6e7f",
+        "name": "KLTN_HoSo_API_v2",
+        "description": "API Test Collection cho Module Hồ Sơ (ho_sos) - v2\n\nThay đổi so với v1:\n- Thêm NTD xem hồ sơ công khai\n- Admin xoá mềm (soft delete) + khôi phục\n- Bỏ Admin cập nhật hồ sơ",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:8000/api/v1"
+        },
+        {
+            "key": "token",
+            "value": ""
+        }
+    ],
+    "item": [
+        {
+            "name": "🔑 Đăng nhập",
+            "item": [
+                {
+                    "name": "Đăng nhập - Admin",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code===200){var j=pm.response.json();if(j.data&&j.data.access_token)pm.collectionVariables.set('token',j.data.access_token);}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"admin@kltn.com\",\n    \"mat_khau\": \"Admin@123\"\n}"
+                        },
+                        "url": "{{base_url}}/dang-nhap"
+                    }
+                },
+                {
+                    "name": "Đăng nhập - Ứng viên 1",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code===200){var j=pm.response.json();if(j.data&&j.data.access_token)pm.collectionVariables.set('token',j.data.access_token);}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"ung.vien1@kltn.com\",\n    \"mat_khau\": \"UV@123456\"\n}"
+                        },
+                        "url": "{{base_url}}/dang-nhap"
+                    }
+                },
+                {
+                    "name": "Đăng nhập - NTD 1",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code===200){var j=pm.response.json();if(j.data&&j.data.access_token)pm.collectionVariables.set('token',j.data.access_token);}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"tuyen.dung1@kltn.com\",\n    \"mat_khau\": \"NTD@123456\"\n}"
+                        },
+                        "url": "{{base_url}}/dang-nhap"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "👤 Ứng viên - Hồ sơ",
+            "item": [
+                {
+                    "name": "TC-UV-01: Tạo hồ sơ đầy đủ",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"tieu_de_ho_so\": \"Hồ sơ DevOps Engineer\",\n    \"muc_tieu_nghe_nghiep\": \"Mong muốn ứng tuyển vị trí DevOps.\",\n    \"trinh_do\": \"dai_hoc\",\n    \"kinh_nghiem_nam\": 3,\n    \"mo_ta_ban_than\": \"Thành thạo Docker, Kubernetes.\",\n    \"trang_thai\": 1\n}"
+                        },
+                        "url": "{{base_url}}/ung-vien/ho-sos"
+                    }
+                },
+                {
+                    "name": "TC-UV-02: Tạo tối thiểu",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"tieu_de_ho_so\": \"Hồ sơ nhanh\"\n}"
+                        },
+                        "url": "{{base_url}}/ung-vien/ho-sos"
+                    }
+                },
+                {
+                    "name": "TC-UV-03: Thiếu tiêu đề ❌",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"muc_tieu_nghe_nghiep\": \"Tìm việc\"\n}"
+                        },
+                        "url": "{{base_url}}/ung-vien/ho-sos"
+                    }
+                },
+                {
+                    "name": "TC-UV-04: Trình độ sai ❌",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"tieu_de_ho_so\": \"Test\",\n    \"trinh_do\": \"sai_value\"\n}"
+                        },
+                        "url": "{{base_url}}/ung-vien/ho-sos"
+                    }
+                },
+                {
+                    "name": "TC-UV-07: Danh sách hồ sơ",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}/ung-vien/ho-sos"
+                    }
+                },
+                {
+                    "name": "TC-UV-08: Lọc trạng thái",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/ung-vien/ho-sos?trang_thai=1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "ung-vien",
+                                "ho-sos"
+                            ],
+                            "query": [
+                                {
+                                    "key": "trang_thai",
+                                    "value": "1"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "TC-UV-09: Chi tiết hồ sơ",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}/ung-vien/ho-sos/1"
+                    }
+                },
+                {
+                    "name": "TC-UV-10: Xem người khác ❌",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}/ung-vien/ho-sos/4"
+                    }
+                },
+                {
+                    "name": "TC-UV-11: Cập nhật hồ sơ",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"tieu_de_ho_so\": \"Hồ sơ Backend (Đã cập nhật)\",\n    \"trinh_do\": \"thac_si\"\n}"
+                        },
+                        "url": "{{base_url}}/ung-vien/ho-sos/1"
+                    }
+                },
+                {
+                    "name": "TC-UV-13: Ẩn hồ sơ",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}/ung-vien/ho-sos/1/trang-thai"
+                    }
+                },
+                {
+                    "name": "TC-UV-14: Công khai lại",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}/ung-vien/ho-sos/1/trang-thai"
+                    }
+                },
+                {
+                    "name": "TC-UV-15: Xoá hồ sơ",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}/ung-vien/ho-sos/3"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "🏢 NTD - Xem hồ sơ ứng viên",
+            "item": [
+                {
+                    "name": "TC-NTD-01: Duyệt hồ sơ công khai",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}/nha-tuyen-dung/ho-sos",
+                        "description": "⚠️ Đăng nhập bằng NTD trước khi test"
+                    }
+                },
+                {
+                    "name": "TC-NTD-02: Lọc trình độ",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/nha-tuyen-dung/ho-sos?trinh_do=dai_hoc",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "nha-tuyen-dung",
+                                "ho-sos"
+                            ],
+                            "query": [
+                                {
+                                    "key": "trinh_do",
+                                    "value": "dai_hoc"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "TC-NTD-03: Lọc kinh nghiệm",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/nha-tuyen-dung/ho-sos?kinh_nghiem_tu=2&kinh_nghiem_den=5",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "nha-tuyen-dung",
+                                "ho-sos"
+                            ],
+                            "query": [
+                                {
+                                    "key": "kinh_nghiem_tu",
+                                    "value": "2"
+                                },
+                                {
+                                    "key": "kinh_nghiem_den",
+                                    "value": "5"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "TC-NTD-04: Tìm kiếm",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/nha-tuyen-dung/ho-sos?search=Backend",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "nha-tuyen-dung",
+                                "ho-sos"
+                            ],
+                            "query": [
+                                {
+                                    "key": "search",
+                                    "value": "Backend"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "TC-NTD-05: Chi tiết hồ sơ",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}/nha-tuyen-dung/ho-sos/1"
+                    }
+                },
+                {
+                    "name": "TC-NTD-06: Xem hồ sơ ẩn ❌",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}/nha-tuyen-dung/ho-sos/3",
+                        "description": "ID 3 là hồ sơ ẩn → mong đợi 404"
+                    }
+                },
+                {
+                    "name": "TC-NTD-07: UV gọi API NTD ❌",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}/nha-tuyen-dung/ho-sos",
+                        "description": "⚠️ Đăng nhập bằng UV trước khi test → mong đợi 403"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "👑 Admin - Hồ sơ",
+            "item": [
+                {
+                    "name": "TC-AD-01: Danh sách hồ sơ",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/admin/ho-sos?per_page=10",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "ho-sos"
+                            ],
+                            "query": [
+                                {
+                                    "key": "per_page",
+                                    "value": "10"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "TC-AD-02: Lọc công khai",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/admin/ho-sos?trang_thai=1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "ho-sos"
+                            ],
+                            "query": [
+                                {
+                                    "key": "trang_thai",
+                                    "value": "1"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "TC-AD-04: Tìm kiếm",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/admin/ho-sos?search=Backend",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "ho-sos"
+                            ],
+                            "query": [
+                                {
+                                    "key": "search",
+                                    "value": "Backend"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "TC-AD-07: Chi tiết hồ sơ",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}/admin/ho-sos/1"
+                    }
+                },
+                {
+                    "name": "TC-AD-09: Ẩn hồ sơ",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}/admin/ho-sos/2/trang-thai"
+                    }
+                },
+                {
+                    "name": "TC-AD-10: Công khai lại",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}/admin/ho-sos/2/trang-thai"
+                    }
+                },
+                {
+                    "name": "TC-AD-11: Xoá mềm hồ sơ",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}/admin/ho-sos/10"
+                    }
+                },
+                {
+                    "name": "TC-AD-13: Thùng rác (đã xoá)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}/admin/ho-sos/da-xoa"
+                    }
+                },
+                {
+                    "name": "TC-AD-14: Khôi phục hồ sơ",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}/admin/ho-sos/10/khoi-phuc"
+                    }
+                },
+                {
+                    "name": "TC-AD-15: Khôi phục chưa xoá ❌",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}/admin/ho-sos/1/khoi-phuc"
+                    }
+                },
+                {
+                    "name": "TC-AD-16: Thống kê",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}/admin/ho-sos/thong-ke"
+                    }
+                }
+            ]
+        }
+    ]
+}

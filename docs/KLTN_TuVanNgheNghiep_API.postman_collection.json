@@ -1,0 +1,139 @@
+{
+	"info": {
+		"_postman_id": "5c7f24d7-e872-57bc-9d01-cde1effc0022",
+		"name": "KLTN_TuVanNgheNghiep_API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. ỨNG VIÊN (Vai trò = 0)",
+			"item": [
+				{
+					"name": "Xem Báo cáo Phân Tích (AI)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ung_vien_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/ung-vien/tu-van-nghe-nghieps",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"ung-vien",
+								"tu-van-nghe-nghieps"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "2. ADMIN / AI ENGINEER (Vai trò = 2)",
+			"item": [
+				{
+					"name": "Monitor All System Advices",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/admin/tu-van-nghe-nghieps",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"tu-van-nghe-nghieps"
+							]
+						}
+					}
+				},
+				{
+					"name": "Thống kê Xu Hướng Định Hướng",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/admin/tu-van-nghe-nghieps/thong-ke",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"tu-van-nghe-nghieps",
+								"thong-ke"
+							]
+						}
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "ung_vien_token",
+			"value": "nhập_token_ứng_viên",
+			"type": "string"
+		},
+		{
+			"key": "admin_token",
+			"value": "nhập_token_admin",
+			"type": "string"
+		}
+	]
+}

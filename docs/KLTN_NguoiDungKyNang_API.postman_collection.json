@@ -1,0 +1,405 @@
+{
+    "info": {
+        "_postman_id": "e5g6h7i8-9j0k-1l2m-3n4o-5p6q7r8s9t0u",
+        "name": "KLTN_NguoiDungKyNang_API",
+        "description": "API Test Collection cho Module Kỹ Năng Người Dùng (nguoi_dung_ky_nangs)\n\n- UV: CRUD kỹ năng cá nhân\n- Admin: Xem/Thống kê",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:8000/api/v1"
+        },
+        {
+            "key": "token",
+            "value": ""
+        }
+    ],
+    "item": [
+        {
+            "name": "🔑 Đăng nhập",
+            "item": [
+                {
+                    "name": "Đăng nhập - Admin",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if(pm.response.code===200){var j=pm.response.json();if(j.data&&j.data.access_token)pm.collectionVariables.set('token',j.data.access_token);}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"email\":\"admin@kltn.com\",\"mat_khau\":\"Admin@123\"}"
+                        },
+                        "url": "{{base_url}}/dang-nhap"
+                    }
+                },
+                {
+                    "name": "Đăng nhập - UV 1",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if(pm.response.code===200){var j=pm.response.json();if(j.data&&j.data.access_token)pm.collectionVariables.set('token',j.data.access_token);}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"email\":\"ung.vien1@kltn.com\",\"mat_khau\":\"UV@123456\"}"
+                        },
+                        "url": "{{base_url}}/dang-nhap"
+                    }
+                },
+                {
+                    "name": "Đăng nhập - UV 2",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if(pm.response.code===200){var j=pm.response.json();if(j.data&&j.data.access_token)pm.collectionVariables.set('token',j.data.access_token);}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"email\":\"ung.vien2@kltn.com\",\"mat_khau\":\"UV@123456\"}"
+                        },
+                        "url": "{{base_url}}/dang-nhap"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "👤 UV - Kỹ năng cá nhân",
+            "item": [
+                {
+                    "name": "TC-UV-01: Xem kỹ năng của mình",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}/ung-vien/ky-nangs"
+                    }
+                },
+                {
+                    "name": "TC-UV-03: Thêm kỹ năng",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"ky_nang_id\": 26,\n    \"muc_do\": 3,\n    \"nam_kinh_nghiem\": 2\n}"
+                        },
+                        "url": "{{base_url}}/ung-vien/ky-nangs"
+                    }
+                },
+                {
+                    "name": "TC-UV-04: Thêm trùng ❌",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"ky_nang_id\": 1,\n    \"muc_do\": 3,\n    \"nam_kinh_nghiem\": 1\n}"
+                        },
+                        "url": "{{base_url}}/ung-vien/ky-nangs"
+                    }
+                },
+                {
+                    "name": "TC-UV-05: Thiếu ky_nang_id ❌",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"muc_do\": 3\n}"
+                        },
+                        "url": "{{base_url}}/ung-vien/ky-nangs"
+                    }
+                },
+                {
+                    "name": "TC-UV-06: Mức độ sai ❌",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"ky_nang_id\": 20,\n    \"muc_do\": 9\n}"
+                        },
+                        "url": "{{base_url}}/ung-vien/ky-nangs"
+                    }
+                },
+                {
+                    "name": "TC-UV-09: Cập nhật mức độ",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"muc_do\": 5,\n    \"nam_kinh_nghiem\": 4\n}"
+                        },
+                        "url": "{{base_url}}/ung-vien/ky-nangs/1"
+                    }
+                },
+                {
+                    "name": "TC-UV-12: Xoá kỹ năng",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}/ung-vien/ky-nangs/9"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "👑 Admin - Kỹ năng người dùng",
+            "item": [
+                {
+                    "name": "TC-AD-01: Tất cả bản ghi",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}/admin/nguoi-dung-ky-nangs"
+                    }
+                },
+                {
+                    "name": "TC-AD-02: Lọc theo user",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/admin/nguoi-dung-ky-nangs?nguoi_dung_id=2",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "nguoi-dung-ky-nangs"
+                            ],
+                            "query": [
+                                {
+                                    "key": "nguoi_dung_id",
+                                    "value": "2"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "TC-AD-03: Lọc theo mức độ",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/admin/nguoi-dung-ky-nangs?muc_do=5",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "nguoi-dung-ky-nangs"
+                            ],
+                            "query": [
+                                {
+                                    "key": "muc_do",
+                                    "value": "5"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "TC-AD-04: Thống kê",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}/admin/nguoi-dung-ky-nangs/thong-ke"
+                    }
+                },
+                {
+                    "name": "TC-AD-05: Kỹ năng của user 2",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}/admin/nguoi-dung-ky-nangs/nguoi-dung/2"
+                    }
+                }
+            ]
+        }
+    ]
+}

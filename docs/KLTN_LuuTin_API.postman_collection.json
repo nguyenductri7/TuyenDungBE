@@ -1,0 +1,148 @@
+{
+	"info": {
+		"_postman_id": "4b6f13c6-f761-46ab-8c90-bcd0dfebf283",
+		"name": "KLTN_LuuTin_API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2345678"
+	},
+	"item": [
+		{
+			"name": "1. ỨNG VIÊN (Vai trò = 0)",
+			"item": [
+				{
+					"name": "Xem danh sách tin đã lưu",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ung_vien_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/ung-vien/tin-da-luu",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"ung-vien",
+								"tin-da-luu"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Toggle - Lưu / Bỏ lưu 1 tin",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ung_vien_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/ung-vien/tin-da-luu/1/toggle",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"ung-vien",
+								"tin-da-luu",
+								"1",
+								"toggle"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2. ADMIN (Vai trò = 2)",
+			"item": [
+				{
+					"name": "Thống kê TOP tin được lưu nhiều nhất",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/admin/luu-tins/thong-ke",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"luu-tins",
+								"thong-ke"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "ung_vien_token",
+			"value": "nhập_token_ứng_viên_vào_đây",
+			"type": "string"
+		},
+		{
+			"key": "admin_token",
+			"value": "nhập_token_admin_vào_đây",
+			"type": "string"
+		}
+	]
+}

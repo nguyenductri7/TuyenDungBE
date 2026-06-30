@@ -1,0 +1,429 @@
+{
+    "info": {
+        "_postman_id": "f6g7h8i9-0j1k-2l3m-4n5o-6p7q8r9s0t1u",
+        "name": "KLTN_CongTy_API",
+        "description": "API Test Collection cho Module Công Ty (cong_tys)\n\n- Public: Xem danh sách/chi tiết\n- NTD: Tạo/Xem/Cập nhật công ty của mình\n- Admin: Full CRUD + Thống kê",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:8000/api/v1"
+        },
+        {
+            "key": "token",
+            "value": ""
+        }
+    ],
+    "item": [
+        {
+            "name": "🔑 Đăng nhập",
+            "item": [
+                {
+                    "name": "Đăng nhập - Admin",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if(pm.response.code===200){var j=pm.response.json();if(j.data&&j.data.access_token)pm.collectionVariables.set('token',j.data.access_token);}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"email\":\"admin@kltn.com\",\"mat_khau\":\"Admin@123\"}"
+                        },
+                        "url": "{{base_url}}/dang-nhap"
+                    }
+                },
+                {
+                    "name": "Đăng nhập - NTD 1",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if(pm.response.code===200){var j=pm.response.json();if(j.data&&j.data.access_token)pm.collectionVariables.set('token',j.data.access_token);}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"email\":\"tuyen.dung1@kltn.com\",\"mat_khau\":\"NTD@123456\"}"
+                        },
+                        "url": "{{base_url}}/dang-nhap"
+                    }
+                },
+                {
+                    "name": "Đăng nhập - UV (test 403)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if(pm.response.code===200){var j=pm.response.json();if(j.data&&j.data.access_token)pm.collectionVariables.set('token',j.data.access_token);}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"email\":\"ung.vien1@kltn.com\",\"mat_khau\":\"UV@123456\"}"
+                        },
+                        "url": "{{base_url}}/dang-nhap"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "🏢 Public - Công ty",
+            "item": [
+                {
+                    "name": "TC-PUB-01: Tất cả",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": "{{base_url}}/cong-tys"
+                    }
+                },
+                {
+                    "name": "TC-PUB-02: Tìm kiếm",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/cong-tys?search=TechViet",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "cong-tys"
+                            ],
+                            "query": [
+                                {
+                                    "key": "search",
+                                    "value": "TechViet"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "TC-PUB-04: Chi tiết",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": "{{base_url}}/cong-tys/1"
+                    }
+                },
+                {
+                    "name": "TC-PUB-05: 404 ❌",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": "{{base_url}}/cong-tys/9999"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "💼 NTD - Công ty",
+            "item": [
+                {
+                    "name": "TC-NTD-01: Xem công ty",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}/nha-tuyen-dung/cong-ty"
+                    }
+                },
+                {
+                    "name": "TC-NTD-02: Tạo trùng ❌",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"ten_cong_ty\": \"Test Corp\"\n}"
+                        },
+                        "url": "{{base_url}}/nha-tuyen-dung/cong-ty"
+                    }
+                },
+                {
+                    "name": "TC-NTD-03: Cập nhật tên",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"ten_cong_ty\": \"TechViet Pro\"\n}"
+                        },
+                        "url": "{{base_url}}/nha-tuyen-dung/cong-ty"
+                    }
+                },
+                {
+                    "name": "TC-NTD-04: Cập nhật nhiều",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"dia_chi\": \"Địa chỉ mới\",\n    \"quy_mo\": \"201-500\"\n}"
+                        },
+                        "url": "{{base_url}}/nha-tuyen-dung/cong-ty"
+                    }
+                },
+                {
+                    "name": "TC-NTD-05: Quy mô sai ❌",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"quy_mo\": \"abc\"\n}"
+                        },
+                        "url": "{{base_url}}/nha-tuyen-dung/cong-ty"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "👑 Admin - Công ty",
+            "item": [
+                {
+                    "name": "TC-AD-01: Tất cả",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}/admin/cong-tys"
+                    }
+                },
+                {
+                    "name": "TC-AD-03: Thống kê",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}/admin/cong-tys/thong-ke"
+                    }
+                },
+                {
+                    "name": "TC-AD-04: Chi tiết",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}/admin/cong-tys/1"
+                    }
+                },
+                {
+                    "name": "TC-AD-05: Cập nhật",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"ten_cong_ty\": \"Admin Edit Corp\"\n}"
+                        },
+                        "url": "{{base_url}}/admin/cong-tys/1"
+                    }
+                },
+                {
+                    "name": "TC-AD-06: Đổi trạng thái",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}/admin/cong-tys/1/trang-thai"
+                    }
+                },
+                {
+                    "name": "TC-AD-07: Xoá",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}/admin/cong-tys/2"
+                    }
+                }
+            ]
+        }
+    ]
+}

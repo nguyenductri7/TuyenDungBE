@@ -1,0 +1,542 @@
+{
+  "info": {
+    "_postman_id": "f4fdab52-4de2-4ab7-9bc0-0d7f46db7d01",
+    "name": "KLTN AI Integration Test",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Bộ test Postman cho BE-AI bridge và AI service local."
+  },
+  "item": [
+    {
+      "name": "1. Public And Auth",
+      "item": [
+        {
+          "name": "Public - Get Industries",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{be_url}}/v1/nganh-nghes",
+              "host": [
+                "{{be_url}}"
+              ],
+              "path": [
+                "v1",
+                "nganh-nghes"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Candidate - Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ho_ten\": \"Ứng viên AI Test\",\n  \"email\": \"{{candidate_email}}\",\n  \"mat_khau\": \"{{user_password}}\",\n  \"mat_khau_confirmation\": \"{{user_password}}\",\n  \"so_dien_thoai\": \"0901234567\",\n  \"vai_tro\": 0\n}"
+            },
+            "url": {
+              "raw": "{{be_url}}/v1/dang-ky",
+              "host": [
+                "{{be_url}}"
+              ],
+              "path": [
+                "v1",
+                "dang-ky"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Candidate - Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res?.data?.access_token) {",
+                  "  pm.environment.set('token_ung_vien', res.data.access_token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{candidate_email}}\",\n  \"mat_khau\": \"{{user_password}}\"\n}"
+            },
+            "url": {
+              "raw": "{{be_url}}/v1/dang-nhap",
+              "host": [
+                "{{be_url}}"
+              ],
+              "path": [
+                "v1",
+                "dang-nhap"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Recruiter - Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ho_ten\": \"Nhà tuyển dụng AI Test\",\n  \"email\": \"{{recruiter_email}}\",\n  \"mat_khau\": \"{{user_password}}\",\n  \"mat_khau_confirmation\": \"{{user_password}}\",\n  \"so_dien_thoai\": \"0902345678\",\n  \"vai_tro\": 1\n}"
+            },
+            "url": {
+              "raw": "{{be_url}}/v1/dang-ky",
+              "host": [
+                "{{be_url}}"
+              ],
+              "path": [
+                "v1",
+                "dang-ky"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Recruiter - Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res?.data?.access_token) {",
+                  "  pm.environment.set('token_ntd', res.data.access_token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{recruiter_email}}\",\n  \"mat_khau\": \"{{user_password}}\"\n}"
+            },
+            "url": {
+              "raw": "{{be_url}}/v1/dang-nhap",
+              "host": [
+                "{{be_url}}"
+              ],
+              "path": [
+                "v1",
+                "dang-nhap"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Recruiter Setup",
+      "item": [
+        {
+          "name": "Recruiter - Create Company",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res?.data?.id) {",
+                  "  pm.environment.set('cong_ty_id', res.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_ntd}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ten_cong_ty\": \"Công ty AI Test\",\n  \"ma_so_thue\": \"{{ma_so_thue}}\",\n  \"dia_chi\": \"Đà Nẵng\",\n  \"email\": \"company-ai@example.com\",\n  \"website\": \"https://example.com\",\n  \"quy_mo\": \"11-50\",\n  \"nganh_nghe_id\": {{nganh_nghe_id}}\n}"
+            },
+            "url": {
+              "raw": "{{be_url}}/v1/nha-tuyen-dung/cong-ty",
+              "host": [
+                "{{be_url}}"
+              ],
+              "path": [
+                "v1",
+                "nha-tuyen-dung",
+                "cong-ty"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Recruiter - Create Job",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res?.data?.id) {",
+                  "  pm.environment.set('tin_tuyen_dung_id', res.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_ntd}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tieu_de\": \"Backend Developer Laravel\",\n  \"mo_ta_cong_viec\": \"Tuyển dụng Backend Developer. Yêu cầu Laravel, MySQL, REST API, Git. Ưu tiên Docker và kiểm thử. Địa điểm Đà Nẵng. Làm việc toàn thời gian.\",\n  \"dia_diem_lam_viec\": \"Đà Nẵng\",\n  \"hinh_thuc_lam_viec\": \"Toàn thời gian\",\n  \"cap_bac\": \"Nhân viên\",\n  \"so_luong_tuyen\": 2,\n  \"muc_luong\": 18000000,\n  \"kinh_nghiem_yeu_cau\": \"2 năm\",\n  \"ngay_het_han\": \"2026-12-31\",\n  \"nganh_nghes\": [{{nganh_nghe_id}}]\n}"
+            },
+            "url": {
+              "raw": "{{be_url}}/v1/nha-tuyen-dung/tin-tuyen-dungs",
+              "host": [
+                "{{be_url}}"
+              ],
+              "path": [
+                "v1",
+                "nha-tuyen-dung",
+                "tin-tuyen-dungs"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Candidate Setup",
+      "item": [
+        {
+          "name": "Candidate - Create CV",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res?.data?.id) {",
+                  "  pm.environment.set('ho_so_id', res.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_ung_vien}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "tieu_de_ho_so",
+                  "value": "CV Backend Laravel",
+                  "type": "text"
+                },
+                {
+                  "key": "muc_tieu_nghe_nghiep",
+                  "value": "Trở thành Backend Developer chuyên nghiệp.",
+                  "type": "text"
+                },
+                {
+                  "key": "trinh_do",
+                  "value": "dai_hoc",
+                  "type": "text"
+                },
+                {
+                  "key": "kinh_nghiem_nam",
+                  "value": "2",
+                  "type": "text"
+                },
+                {
+                  "key": "mo_ta_ban_than",
+                  "value": "Có kinh nghiệm Laravel, MySQL, REST API.",
+                  "type": "text"
+                },
+                {
+                  "key": "trang_thai",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "file_cv",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{be_url}}/v1/ung-vien/ho-sos",
+              "host": [
+                "{{be_url}}"
+              ],
+              "path": [
+                "v1",
+                "ung-vien",
+                "ho-sos"
+              ]
+            },
+            "description": "Gắn tay một file PDF CV thật vào trường file_cv trước khi gửi."
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Chatbot Via BE",
+      "item": [
+        {
+          "name": "Candidate - AI Chat Create Session",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res?.data?.id) {",
+                  "  pm.environment.set('ai_chat_session_id', res.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_ung_vien}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"related_ho_so_id\": {{ho_so_id}},\n  \"related_tin_tuyen_dung_id\": {{tin_tuyen_dung_id}},\n  \"title\": \"Tư vấn nghề nghiệp cùng AI\"\n}"
+            },
+            "url": {
+              "raw": "{{be_url}}/v1/ai-chat/sessions",
+              "host": [
+                "{{be_url}}"
+              ],
+              "path": [
+                "v1",
+                "ai-chat",
+                "sessions"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Candidate - AI Chat Sessions List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_ung_vien}}"
+              }
+            ],
+            "url": {
+              "raw": "{{be_url}}/v1/ai-chat/sessions",
+              "host": [
+                "{{be_url}}"
+              ],
+              "path": [
+                "v1",
+                "ai-chat",
+                "sessions"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Candidate - AI Chat Stream Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_ung_vien}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "text/event-stream"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"session_id\": {{ai_chat_session_id}},\n  \"message\": \"{{chat_message}}\"\n}"
+            },
+            "url": {
+              "raw": "{{be_url}}/v1/ai-chat/messages/stream",
+              "host": [
+                "{{be_url}}"
+              ],
+              "path": [
+                "v1",
+                "ai-chat",
+                "messages",
+                "stream"
+              ]
+            },
+            "description": "Luồng chính để test chatbot chuyên nghiệp theo SSE. Nếu dùng Ollama hoặc OpenAI, BE sẽ relay stream thật từ provider."
+          }
+        },
+        {
+          "name": "Candidate - AI Chat Send Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_ung_vien}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"session_id\": {{ai_chat_session_id}},\n  \"message\": \"Vì sao hồ sơ của tôi chưa phù hợp hoàn toàn với job này?\"\n}"
+            },
+            "url": {
+              "raw": "{{be_url}}/v1/ai-chat/messages",
+              "host": [
+                "{{be_url}}"
+              ],
+              "path": [
+                "v1",
+                "ai-chat",
+                "messages"
+              ]
+            },
+            "description": "Request non-stream để đối chiếu với bản stream hoặc test nhanh khi UI chưa hỗ trợ SSE."
+          }
+        },
+        {
+          "name": "Candidate - AI Chat Get Messages",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_ung_vien}}"
+              }
+            ],
+            "url": {
+              "raw": "{{be_url}}/v1/ai-chat/sessions/{{ai_chat_session_id}}/messages",
+              "host": [
+                "{{be_url}}"
+              ],
+              "path": [
+                "v1",
+                "ai-chat",
+                "sessions",
+                "{{ai_chat_session_id}}",
+                "messages"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Candidate - AI Chat Update Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token_ung_vien}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": 2,\n  \"summary\": \"Đã hoàn thành phiên tư vấn nghề nghiệp thử nghiệm.\"\n}"
+            },
+            "url": {
+              "raw": "{{be_url}}/v1/ai-chat/sessions/{{ai_chat_session_id}}/status",
+              "host": [
+                "{{be_url}}"
+              ],
+              "path": [
+                "v1",
+                "ai-chat",
+                "sessions",
+                "{{ai_chat_session_id}}",
+                "status"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

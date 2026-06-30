@@ -1,0 +1,145 @@
+{
+	"info": {
+		"_postman_id": "4b6f13c6-f761-46ab-8c90-bcd0dfebf001",
+		"name": "KLTN_KetQuaMatching_API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. ỨNG VIÊN (Vai trò = 0)",
+			"item": [
+				{
+					"name": "Lấy DS Việc Làm AI Gợi Ý",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ung_vien_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/ung-vien/ket-qua-matchings",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"ung-vien",
+								"ket-qua-matchings"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "2. ADMIN / AI ENGINEER (Vai trò = 2)",
+			"item": [
+				{
+					"name": "Monitor All Matching Data",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/admin/ket-qua-matchings?min_score=80",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"ket-qua-matchings"
+							],
+							"query": [
+								{
+									"key": "min_score",
+									"value": "80"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Thống kê Hiệu suất AI",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/admin/ket-qua-matchings/thong-ke",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"ket-qua-matchings",
+								"thong-ke"
+							]
+						}
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "ung_vien_token",
+			"value": "nhập_token_ứng_viên",
+			"type": "string"
+		},
+		{
+			"key": "admin_token",
+			"value": "nhập_token_admin",
+			"type": "string"
+		}
+	]
+}

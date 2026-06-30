@@ -1,0 +1,520 @@
+{
+    "info": {
+        "_postman_id": "d4f5g6h7-8i9j-0k1l-2m3n-4o5p6q7r8s9t",
+        "name": "KLTN_KyNang_API",
+        "description": "API Test Collection cho Module Kỹ Năng (ky_nangs)\n\n- Public: Xem danh sách/chi tiết\n- Admin: Full CRUD",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:8000/api/v1"
+        },
+        {
+            "key": "token",
+            "value": ""
+        }
+    ],
+    "item": [
+        {
+            "name": "🔑 Đăng nhập",
+            "item": [
+                {
+                    "name": "Đăng nhập - Admin",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if(pm.response.code===200){var j=pm.response.json();if(j.data&&j.data.access_token)pm.collectionVariables.set('token',j.data.access_token);}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"email\":\"admin@kltn.com\",\"mat_khau\":\"Admin@123\"}"
+                        },
+                        "url": "{{base_url}}/dang-nhap"
+                    }
+                },
+                {
+                    "name": "Đăng nhập - UV (test 403)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if(pm.response.code===200){var j=pm.response.json();if(j.data&&j.data.access_token)pm.collectionVariables.set('token',j.data.access_token);}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"email\":\"ung.vien1@kltn.com\",\"mat_khau\":\"UV@123456\"}"
+                        },
+                        "url": "{{base_url}}/dang-nhap"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "⭐ Public - Kỹ năng",
+            "item": [
+                {
+                    "name": "TC-PUB-01: Tất cả kỹ năng",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": "{{base_url}}/ky-nangs"
+                    }
+                },
+                {
+                    "name": "TC-PUB-02: Tìm kiếm",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/ky-nangs?search=PHP",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "ky-nangs"
+                            ],
+                            "query": [
+                                {
+                                    "key": "search",
+                                    "value": "PHP"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "TC-PUB-03: Phân trang",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/ky-nangs?per_page=5",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "ky-nangs"
+                            ],
+                            "query": [
+                                {
+                                    "key": "per_page",
+                                    "value": "5"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "TC-PUB-04: Chi tiết",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": "{{base_url}}/ky-nangs/1"
+                    }
+                },
+                {
+                    "name": "TC-PUB-05: ID không tồn tại ❌",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": "{{base_url}}/ky-nangs/9999"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "👑 Admin - Kỹ năng",
+            "item": [
+                {
+                    "name": "TC-AD-01: Danh sách",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}/admin/ky-nangs"
+                    }
+                },
+                {
+                    "name": "TC-AD-02: Tìm kiếm",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/admin/ky-nangs?search=React",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "ky-nangs"
+                            ],
+                            "query": [
+                                {
+                                    "key": "search",
+                                    "value": "React"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "TC-AD-03: Sắp xếp theo CC giảm",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/admin/ky-nangs?sort_by=so_chung_chi&sort_dir=desc",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "admin",
+                                "ky-nangs"
+                            ],
+                            "query": [
+                                {
+                                    "key": "sort_by",
+                                    "value": "so_chung_chi"
+                                },
+                                {
+                                    "key": "sort_dir",
+                                    "value": "desc"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "TC-AD-04: Thống kê",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}/admin/ky-nangs/thong-ke"
+                    }
+                },
+                {
+                    "name": "TC-AD-07: Tạo đầy đủ",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"ten_ky_nang\": \"GraphQL\",\n    \"so_chung_chi\": 1,\n    \"hinh_anh\": \"graphql.png\"\n}"
+                        },
+                        "url": "{{base_url}}/admin/ky-nangs"
+                    }
+                },
+                {
+                    "name": "TC-AD-08: Tạo tối thiểu",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"ten_ky_nang\": \"Rust\"\n}"
+                        },
+                        "url": "{{base_url}}/admin/ky-nangs"
+                    }
+                },
+                {
+                    "name": "TC-AD-09: Thiếu tên ❌",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"so_chung_chi\": 1\n}"
+                        },
+                        "url": "{{base_url}}/admin/ky-nangs"
+                    }
+                },
+                {
+                    "name": "TC-AD-10: Trùng tên ❌",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"ten_ky_nang\": \"PHP\"\n}"
+                        },
+                        "url": "{{base_url}}/admin/ky-nangs"
+                    }
+                },
+                {
+                    "name": "TC-AD-12: Chi tiết",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}/admin/ky-nangs/1"
+                    }
+                },
+                {
+                    "name": "TC-AD-13: Đổi tên",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"ten_ky_nang\": \"PHP 8.x\"\n}"
+                        },
+                        "url": "{{base_url}}/admin/ky-nangs/1"
+                    }
+                },
+                {
+                    "name": "TC-AD-14: Đổi số CC",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"so_chung_chi\": 5\n}"
+                        },
+                        "url": "{{base_url}}/admin/ky-nangs/1"
+                    }
+                },
+                {
+                    "name": "TC-AD-15: Trùng tên khi update ❌",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"ten_ky_nang\": \"JavaScript\"\n}"
+                        },
+                        "url": "{{base_url}}/admin/ky-nangs/1"
+                    }
+                },
+                {
+                    "name": "TC-AD-17: Xoá kỹ năng",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}/admin/ky-nangs/40"
+                    }
+                },
+                {
+                    "name": "TC-AD-18: Xoá 404 ❌",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}/admin/ky-nangs/9999"
+                    }
+                }
+            ]
+        }
+    ]
+}
