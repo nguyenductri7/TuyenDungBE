@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: TuyenDungBE
+    runtime: docker
+    plan: free
+    autoDeploy: true
+
+    dockerfilePath: ./Dockerfile
+
+    healthCheckPath: /
+
+    envVars:
+      - key: APP_ENV
+        value: production
+
+      - key: APP_DEBUG
+        value: "false"
+
+      - key: LOG_CHANNEL
+        value: stack
+
+      - key: LOG_LEVEL
+        value: error
