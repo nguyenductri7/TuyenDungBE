@@ -70,6 +70,18 @@ Backend mặc định chạy tại:
 http://127.0.0.1:8000
 ```
 
+## Deploy Và Email Xác Thực
+
+Khi deploy lên Render hoặc môi trường production, đăng ký/đăng nhập phụ thuộc các biến sau:
+
+- `APP_KEY`: bắt buộc để tạo signed URL xác thực email.
+- `APP_URL`: URL backend public, ví dụ `https://your-backend.onrender.com`.
+- `FRONTEND_URL`: URL frontend public, ví dụ `https://your-frontend.vercel.app`.
+- `MAIL_*`: SMTP thật, không dùng placeholder từ `.env.example`.
+- `QUEUE_CONNECTION=sync`: phù hợp khi chỉ có một web service và chưa chạy queue worker riêng.
+
+Nếu người dùng đăng ký thành công nhưng không nhận email, tài khoản sẽ chưa có `email_verified_at` và đăng nhập sẽ bị chặn với mã `EMAIL_NOT_VERIFIED`. Kiểm tra log deploy để tìm lỗi SMTP như sai app password, sai host/port, hoặc thiếu `APP_KEY`/`APP_URL`.
+
 ## Kết Nối AI Service
 
 Backend gọi FastAPI service qua biến:

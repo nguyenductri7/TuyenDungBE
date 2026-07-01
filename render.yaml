@@ -7,17 +7,84 @@ services:
 
     dockerfilePath: ./Dockerfile
 
-    healthCheckPath: /
+    healthCheckPath: /up
 
     envVars:
+      - key: APP_NAME
+        value: AIRecruitment
+
       - key: APP_ENV
         value: production
 
       - key: APP_DEBUG
         value: "false"
 
+      - key: APP_KEY
+        generateValue: true
+
+      - key: APP_URL
+        sync: false
+
+      - key: FRONTEND_URL
+        sync: false
+
       - key: LOG_CHANNEL
         value: stack
 
       - key: LOG_LEVEL
         value: error
+
+      # Email verification and password reset depend on these SMTP settings.
+      # Use a real provider/app password in Render Dashboard.
+      - key: MAIL_MAILER
+        value: smtp
+
+      - key: MAIL_HOST
+        sync: false
+
+      - key: MAIL_PORT
+        sync: false
+
+      - key: MAIL_USERNAME
+        sync: false
+
+      - key: MAIL_PASSWORD
+        sync: false
+
+      - key: MAIL_ENCRYPTION
+        value: tls
+
+      - key: MAIL_FROM_ADDRESS
+        sync: false
+
+      - key: MAIL_FROM_NAME
+        value: AIRecruitment
+
+      # Keep auth emails/password reset emails immediate on a single Render web service.
+      # Switch back to database/redis only when a queue worker is deployed too.
+      - key: QUEUE_CONNECTION
+        value: sync
+
+      - key: CACHE_STORE
+        value: database
+
+      - key: SESSION_DRIVER
+        value: database
+
+      - key: DB_CONNECTION
+        value: mysql
+
+      - key: DB_HOST
+        sync: false
+
+      - key: DB_PORT
+        value: "3306"
+
+      - key: DB_DATABASE
+        sync: false
+
+      - key: DB_USERNAME
+        sync: false
+
+      - key: DB_PASSWORD
+        sync: false
